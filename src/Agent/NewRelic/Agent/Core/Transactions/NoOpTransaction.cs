@@ -127,6 +127,8 @@ namespace NewRelic.Agent.Core.Transactions
 
         }
 
+        public void SetHttpRequestMethod(string method) { }
+
         public void AttachToAsync()
         {
         }

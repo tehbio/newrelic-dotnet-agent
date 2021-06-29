@@ -137,6 +137,8 @@ namespace NewRelic.Agent.Api
         /// <param name="subStatusCode">The IIS sub-status code if available.  Null otherwise.</param>
         void SetHttpResponseStatusCode(int statusCode, int? subStatusCode = null);
 
+        void SetHttpRequestMethod(string method);
+
         /// <summary>
         /// Attaches the transaction to async storage. Should only call this from async methods.
         /// </summary>

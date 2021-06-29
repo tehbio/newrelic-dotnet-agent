@@ -660,6 +660,11 @@ namespace NewRelic.Agent.Core.Transactions
             TransactionMetadata.SetHttpResponseStatusCode(statusCode, subStatusCode, _errorService);
         }
 
+        public void SetHttpRequestMethod(string method)
+        {
+            TransactionMetadata.UserAndRequestAttributes.TrySetValue(_attribDefs.HttpMethod, method);
+        }
+
         public void AttachToAsync()
         {
             var isAdded = Agent._transactionService.SetTransactionOnAsyncContext(this);

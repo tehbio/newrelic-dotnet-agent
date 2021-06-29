@@ -532,6 +532,10 @@ namespace NewRelic.Agent.Core.Attributes
         private AttributeDefinition<string, string> _httpMethod;
         public AttributeDefinition<string, string> HttpMethod => _httpMethod ?? (_httpMethod =
             AttributeDefinitionBuilder.CreateString("http.method", AttributeClassification.AgentAttributes)
+                .AppliesTo(AttributeDestinations.ErrorTrace)
+                .AppliesTo(AttributeDestinations.ErrorEvent)
+                .AppliesTo(AttributeDestinations.TransactionTrace)
+                .AppliesTo(AttributeDestinations.TransactionEvent)
                 .AppliesTo(AttributeDestinations.SpanEvent)
                 .Build(_attribFilter));
 
