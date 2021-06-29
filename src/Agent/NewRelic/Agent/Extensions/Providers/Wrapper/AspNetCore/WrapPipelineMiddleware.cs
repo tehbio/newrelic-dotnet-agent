@@ -178,6 +178,8 @@ namespace NewRelic.Providers.Wrapper.AspNetCore
                 transaction.SetRequestParameters(parameters);
             }
 
+            transaction.SetHttpRequestMethod(request.Method);
+
             return transaction;
         }
 
