@@ -61,6 +61,7 @@ namespace NewRelic.Providers.Wrapper.Asp35.Shared
 
         public static void TransactionShutdown(IAgent agent, HttpContext httpContext)
         {
+            StoreRequestMethod(agent, httpContext);
             StoreRequestHeaders(agent, httpContext);
             StoreRequestParameters(agent, httpContext);
             SetStatusCode(agent, httpContext);
@@ -113,6 +114,11 @@ namespace NewRelic.Providers.Wrapper.Asp35.Shared
             {
                 return null;
             }
+        }
+
+        private static void StoreRequestMethod(IAgent agent, HttpContext httpContext)
+        {
+            agent.CurrentTransaction.SetHttpRequestMethod(httpContext.Request.HttpMethod);
         }
 
         private static void StoreRequestHeaders(IAgent agent, HttpContext httpContext)
