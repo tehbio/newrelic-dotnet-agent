@@ -118,7 +118,7 @@ namespace NewRelic.Providers.Wrapper.Asp35.Shared
 
         private static void StoreRequestMethod(IAgent agent, HttpContext httpContext)
         {
-            agent.CurrentTransaction.SetHttpRequestMethod(httpContext.Request.HttpMethod);
+            agent.CurrentTransaction.SetRequestMethod(httpContext.Request.HttpMethod);
         }
 
         private static void StoreRequestHeaders(IAgent agent, HttpContext httpContext)

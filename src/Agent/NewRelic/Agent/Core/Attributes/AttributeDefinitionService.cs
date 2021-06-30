@@ -83,6 +83,7 @@ namespace NewRelic.Agent.Core.Attributes
         AttributeDefinition<TimeSpan?, double> QueueDuration { get; }
         AttributeDefinition<TimeSpan?, string> QueueWaitTime { get; }
         AttributeDefinition<string, string> RequestReferrer { get; }
+        AttributeDefinition<string, string> RequestMethod { get; }
         AttributeDefinition<string, string> RequestUri { get; }
         AttributeDefinition<int?, string> ResponseStatus { get; }
         AttributeDefinition<bool, bool> Sampled { get; }
@@ -310,6 +311,16 @@ namespace NewRelic.Agent.Core.Attributes
                 .AppliesTo(AttributeDestinations.JavaScriptAgent)
                 .Build(_attribFilter));
 
+        private AttributeDefinition<string, string> _requestMethod;
+        public AttributeDefinition<string, string> RequestMethod => _requestMethod ??=
+            AttributeDefinitionBuilder.CreateString("request.method", AttributeClassification.AgentAttributes)
+                .AppliesTo(AttributeDestinations.ErrorTrace)
+                .AppliesTo(AttributeDestinations.ErrorEvent)
+                .AppliesTo(AttributeDestinations.TransactionTrace)
+                .AppliesTo(AttributeDestinations.TransactionEvent)
+                .AppliesTo(AttributeDestinations.SpanEvent)
+                .Build(_attribFilter);
+
         private AttributeDefinition<string, string> _requestUri;
         public AttributeDefinition<string, string> RequestUri => _requestUri ?? (_requestUri =
             AttributeDefinitionBuilder.CreateString("request.uri", AttributeClassification.AgentAttributes)
@@ -532,10 +543,6 @@ namespace NewRelic.Agent.Core.Attributes
         private AttributeDefinition<string, string> _httpMethod;
         public AttributeDefinition<string, string> HttpMethod => _httpMethod ?? (_httpMethod =
             AttributeDefinitionBuilder.CreateString("http.method", AttributeClassification.AgentAttributes)
-                .AppliesTo(AttributeDestinations.ErrorTrace)
-                .AppliesTo(AttributeDestinations.ErrorEvent)
-                .AppliesTo(AttributeDestinations.TransactionTrace)
-                .AppliesTo(AttributeDestinations.TransactionEvent)
                 .AppliesTo(AttributeDestinations.SpanEvent)
                 .Build(_attribFilter));
 

@@ -137,8 +137,6 @@ namespace NewRelic.Agent.Api
         /// <param name="subStatusCode">The IIS sub-status code if available.  Null otherwise.</param>
         void SetHttpResponseStatusCode(int statusCode, int? subStatusCode = null);
 
-        void SetHttpRequestMethod(string method);
-
         /// <summary>
         /// Attaches the transaction to async storage. Should only call this from async methods.
         /// </summary>
@@ -217,6 +215,13 @@ namespace NewRelic.Agent.Api
         /// <param name="priority">The priority of the name being set. Higher priority names override lower priority names.</param>
         /// <exception cref="ArgumentNullException"></exception>
         void SetCustomTransactionName(string name, TransactionNamePriority priority = TransactionNamePriority.Uri);
+
+        /// <summary>
+        /// Set the Request Method for the current transaction (if there is one).
+        /// </summary>
+        /// <param name="requestMethod">The Request Method for this transaction. Must not be null.</param>
+        /// <exception cref="ArgumentNullException"></exception>
+        void SetRequestMethod(string requestMethod);
 
         /// <summary>
         /// Set the URI for the current transaction (if there is one).

@@ -660,11 +660,6 @@ namespace NewRelic.Agent.Core.Transactions
             TransactionMetadata.SetHttpResponseStatusCode(statusCode, subStatusCode, _errorService);
         }
 
-        public void SetHttpRequestMethod(string method)
-        {
-            TransactionMetadata.UserAndRequestAttributes.TrySetValue(_attribDefs.HttpMethod, method);
-        }
-
         public void AttachToAsync()
         {
             var isAdded = Agent._transactionService.SetTransactionOnAsyncContext(this);
@@ -778,6 +773,14 @@ namespace NewRelic.Agent.Core.Transactions
             {
                 SetTransactionName(TransactionName.ForWebTransaction(WebTransactionType.StatusCode, TransactionMetadata.HttpResponseStatusCode.ToString()), TransactionNamePriority.StatusCode);
             }
+        }
+
+        public void SetRequestMethod(string requestMethod)
+        {
+            if (requestMethod == null)
+                throw new ArgumentNullException(nameof(requestMethod));
+
+            TransactionMetadata.SetRequestMethod(requestMethod);
         }
 
         public void SetUri(string uri)

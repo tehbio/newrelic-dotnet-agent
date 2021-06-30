@@ -127,8 +127,6 @@ namespace NewRelic.Agent.Core.Transactions
 
         }
 
-        public void SetHttpRequestMethod(string method) { }
-
         public void AttachToAsync()
         {
         }
@@ -180,6 +178,8 @@ namespace NewRelic.Agent.Core.Transactions
         {
 
         }
+
+        public void SetRequestMethod(string requestMethod) { }
 
         public void SetUri(string uri)
         {
