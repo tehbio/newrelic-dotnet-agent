@@ -95,6 +95,8 @@ namespace NewRelic.Providers.Wrapper.Owin
                 transaction.SetRequestParameters(parameters);
             }
 
+            transaction.SetRequestMethod(request.Method);
+
             return transaction;
         }
 
