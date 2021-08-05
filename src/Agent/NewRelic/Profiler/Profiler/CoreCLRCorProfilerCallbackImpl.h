@@ -4,6 +4,8 @@
 #pragma once
 
 #include "ICorProfilerCallbackBase.h"
+#include "../ModuleInjector/ModuleInjector.h"
+#include "Module.h"
 
 #ifdef PAL_STDCPP_COMPAT
 #include "UnixSystemCalls.h"
@@ -14,6 +16,9 @@
 namespace NewRelic { namespace Profiler {
 
     class CoreCLRCorProfilerCallbackImpl : public ICorProfilerCallbackBase {
+
+    private:
+        std::shared_ptr<ModuleInjector::ModuleInjector> _moduleInjector;
 
     public:
         CoreCLRCorProfilerCallbackImpl()
@@ -101,8 +106,47 @@ namespace NewRelic { namespace Profiler {
                     }
                 } catch (...) {
                 }
+
+
+                LogTrace("Module Injection Started. ", moduleId);
+
+                ModuleInjector::IModulePtr module;
+                try
+                {
+                    module = std::make_shared<Module>(_corProfilerInfo4, moduleId);
+                }
+                catch (const NewRelic::Profiler::MessageException& exception)
+                {
+                    (void)exception;
+                    return S_OK;
+                }
+                catch (...)
+                {
+                    LogError(L"An exception was thrown while getting details about a module.");
+                    return E_FAIL;
+                }
+
+                try
+                {
+                    _moduleInjector->InjectIntoModule(*module);
+                }
+                catch (...)
+                {
+                    LogError(L"An exception was thrown while attempting to inject into a module.");
+                    return E_FAIL;
+                }
+
+                LogTrace("Module Injection Finished. ", moduleId, " : ", module->GetModuleName());
+
+
             }
             return S_OK;
+        }
+
+        virtual DWORD OverrideEventMask(DWORD eventMask) override
+        {
+            _moduleInjector.reset(new ModuleInjector::ModuleInjector());
+            return eventMask;
         }
     };
 }
