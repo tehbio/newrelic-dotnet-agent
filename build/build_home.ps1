@@ -9,7 +9,7 @@
 
 Param(
     [ValidateSet("Debug","Release")][string]$Configuration = "Debug",
-    [ValidateSet("All", "Windows", "Linux","Framework", "CoreAll","CoreWindows","CoreLinux")][string]$Type = "All",
+    [ValidateSet("All", "Windows", "Linux","Framework", "CoreAll","CoreWindows","CoreLinux","Standard")][string]$Type = "All",
     [ValidateSet("All","x64","x86")][string]$Architecture = "All",
     [string]$HomePath = "$env:NR_DEV_HOMEROOT",
     [switch]$KeepNewRelicConfig = $false,
@@ -51,6 +51,7 @@ $HomePath = Get-HomeRootPath $HomePath
 
 $net45WrapperHash = @{}
 $netstandard20WrapperHash = @{}
+$allWrapperHash = @{}
 
 $wrapperDirs = Get-ChildItem -LiteralPath "$wrappersRootDir" -Directory
 foreach ($wrapperDir in $wrapperDirs) {
@@ -60,12 +61,14 @@ foreach ($wrapperDir in $wrapperDirs) {
         $dllObject = Get-ChildItem -File -Path "$net45path" -Filter NewRelic.Providers.Wrapper.$wrapperName.dll
         $xmlObject = Get-ChildItem -File -Path "$net45path" -Filter Instrumentation.xml
         $net45WrapperHash.Add($dllObject, $xmlObject)
+        $allWrapperHash.Add($dllObject, $xmlObject)
     }
 
     if ($netstandard20path = Resolve-Path "$wrapperDirPath\bin\$Configuration\netstandard2.*") {
         $dllObject = Get-ChildItem -File -Path "$netstandard20path" -Filter NewRelic.Providers.Wrapper.$wrapperName.dll
         $xmlObject = Get-ChildItem -File -Path "$netstandard20path" -Filter Instrumentation.xml
         $netstandard20WrapperHash.Add($dllObject, $xmlObject)
+        $allWrapperHash.Add($dllObject, $xmlObject)
     }
 }
 
@@ -78,6 +81,7 @@ if ($apsNetCorePath = Resolve-Path "$wrappersRootDir\AspNetCore\bin\$Configurati
 
 $net45StorageArray = @()
 $netstandard20StorageArray = @()
+$allStorageArray = @()
 
 $storageDirs = Get-ChildItem -LiteralPath "$storageRootDir" -Directory
 foreach ($storageDir in $storageDirs) {
@@ -87,11 +91,13 @@ foreach ($storageDir in $storageDirs) {
     if ($net45path = Resolve-Path "$storageDirPath\bin\$Configuration\net4*") {
         $dllObject = Get-ChildItem -File -Path "$net45path" -Filter NewRelic.Providers.Storage.$storageName.dll
         $net45StorageArray += $dllObject
+        $allStorageArray += $dllObject
     }
 
     if ($netstandard20path = Resolve-Path "$storageDirPath\bin\$Configuration\netstandard2.*") {
         $dllObject = Get-ChildItem -File -Path "$netstandard20path" -Filter NewRelic.Providers.Storage.$storageName.dll
         $netstandard20StorageArray += $dllObject
+        $allStorageArray += $dllObject
     }
 }
 
@@ -167,6 +173,17 @@ if($Type -like "All" -or $Type -like "Linux" -or $Type -like "CoreAll" -or $Type
     if (-Not $KeepNewRelicConfig) {
         Copy-NewRelicConfig -RootDirectory "$rootDirectory" -Destination "$HomePath\newrelichome_x64_coreclr_linux\"
     }
+}
+
+New-HomeStructure -Path "$HomePath" -Name "newrelichome_x64_standard"
+Copy-ExtensionsInstrumentation -Destination "$HomePath\newrelichome_x64_standard" -Extensions $allWrapperHash
+Copy-ExtensionsStorage -Destination "$HomePath\newrelichome_x64_standard" -Extensions $allStorageArray
+Copy-ExtensionsOther -RootDirectory "$rootDirectory" -Destination "$HomePath\newrelichome_x64_standard" -Configuration "$Configuration" -Type "Core"
+Copy-AgentRoot  -RootDirectory "$rootDirectory" -Destination "$HomePath\newrelichome_x64_standard" -Configuration "$Configuration" -Type "Core" -Architecture "x64"
+Copy-AgentApi  -RootDirectory "$rootDirectory" -Destination "$HomePath\newrelichome_x64_standard" -Configuration "$Configuration" -Type "Core"
+
+if (-Not $KeepNewRelicConfig) {
+    Copy-NewRelicConfig -RootDirectory "$rootDirectory" -Destination "$HomePath\newrelichome_x64_standard\"
 }
 
 ##################

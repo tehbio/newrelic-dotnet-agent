@@ -17,7 +17,6 @@ namespace NewRelic.Agent.IntegrationTestHelpers.RemoteServiceFixtures
 
         private const string HostedWebCoreProcessName = @"HostedWebCore.exe";
 
-
         protected override string SourceApplicationDirectoryPath { get { return Path.Combine(SourceApplicationsDirectoryPath, ApplicationDirectoryName, "Deploy"); } }
 
         private static readonly string SourceHostedWebCoreProjectDirectoryPath = Path.Combine(SourceIntegrationTestsSolutionDirectoryPath, "HostedWebCore");
@@ -44,7 +43,9 @@ namespace NewRelic.Agent.IntegrationTestHelpers.RemoteServiceFixtures
 
         public override void CopyToRemote()
         {
-            CopyNewRelicHomeDirectoryToRemote();
+            if (IsCoreApp) CopyNewRelicHomeCoreClrDirectoryToRemote();
+            else CopyNewRelicHomeDirectoryToRemote();
+
             CopyApplicationDirectoryToRemote();
             CopyHostedWebCoreToRemote();
             SetNewRelicAppNameInWebConfig();
@@ -94,6 +95,13 @@ namespace NewRelic.Agent.IntegrationTestHelpers.RemoteServiceFixtures
                 startInfo.EnvironmentVariables.Add("COR_PROFILER_PATH", profilerFilePath);
                 startInfo.EnvironmentVariables.Add("NEWRELIC_HOME", newRelicHomeDirectoryPath);
                 startInfo.EnvironmentVariables.Add("NEWRELIC_PROFILER_LOG_DIRECTORY", profilerLogDirectoryPath);
+
+                if (this.IsCoreApp)
+                {
+                    startInfo.EnvironmentVariables["COR_PROFILER"] = "{36032161-FFC0-4B61-B559-F6C5D41BAE5A}";
+                    startInfo.EnvironmentVariables.Add("CORECLR_NEWRELIC_HOME", newRelicHomeDirectoryPath);
+
+                }
             }
 
             if (AdditionalEnvironmentVariables != null)

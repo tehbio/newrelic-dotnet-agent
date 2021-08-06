@@ -62,7 +62,7 @@ namespace NewRelic.Agent.IntegrationTests.WCF
 
                     var logFile = dir.EnumerateFileSystemInfos("*.log")
                     .Where(f => !f.Name.StartsWith("NewRelic.Profiler.", StringComparison.OrdinalIgnoreCase))
-                    .FirstOrDefault(f => f.Name.EndsWith("ConsoleMultiFunctionApplicationFW.log", StringComparison.OrdinalIgnoreCase));
+                    .FirstOrDefault(f => f.Name.Contains("ConsoleMultiFunctionApplicationFW"));
 
                     _agentLog_Client = new AgentLogFile(_fixture.DestinationNewRelicLogFileDirectoryPath, logFile.Name);
                 }
@@ -82,7 +82,7 @@ namespace NewRelic.Agent.IntegrationTests.WCF
 
                     var logFile = dir.EnumerateFileSystemInfos("*.log")
                     .Where(f => !f.Name.StartsWith("NewRelic.Profiler.", StringComparison.OrdinalIgnoreCase))
-                    .FirstOrDefault(f => !f.Name.EndsWith("ConsoleMultiFunctionApplicationFW.log", StringComparison.OrdinalIgnoreCase));
+                    .FirstOrDefault(f => !f.Name.Contains("ConsoleMultiFunctionApplicationFW"));
 
                     _agentLog_Service = new AgentLogFile(_fixture.DestinationNewRelicLogFileDirectoryPath, logFile.Name);
                 }

@@ -31,57 +31,9 @@ namespace NewRelic.Agent.IntegrationTestHelpers.RemoteServiceFixtures
 
         public readonly string SourceApplicationsDirectoryPath;
 
-        private string _sourceNewRelicHomeDirectoryPath = string.Empty;
-        private string SourceNewRelicHomeDirectoryPath
-        {
-            get
-            {
-                if (!string.IsNullOrWhiteSpace(_sourceNewRelicHomeDirectoryPath))
-                {
-                    return _sourceNewRelicHomeDirectoryPath;
-                }
+        private string SourceNewRelicHomeDirectoryPath => Path.Combine(RepositoryRootPath, "src", "Agent", "newrelichome_x64");
 
-                var homeRootPath = Environment.GetEnvironmentVariable("NR_DEV_HOMEROOT");
-                if (!string.IsNullOrWhiteSpace(homeRootPath) && Directory.Exists(homeRootPath))
-                {
-                    _sourceNewRelicHomeDirectoryPath = $@"{homeRootPath}\newrelichome_x64";
-                    return _sourceNewRelicHomeDirectoryPath;
-                }
-
-                _sourceNewRelicHomeDirectoryPath = Path.Combine(RepositoryRootPath, "src", "Agent", "newrelichome_x64");
-                return _sourceNewRelicHomeDirectoryPath;
-            }
-            set
-            {
-                _sourceNewRelicHomeDirectoryPath = value;
-            }
-        }
-
-        private static string _sourceNewRelicHomeCoreClrDirectoryPath = string.Empty;
-        private static string SourceNewRelicHomeCoreClrDirectoryPath
-        {
-            get
-            {
-                if (!string.IsNullOrWhiteSpace(_sourceNewRelicHomeCoreClrDirectoryPath))
-                {
-                    return _sourceNewRelicHomeCoreClrDirectoryPath;
-                }
-
-                var homeRootPath = Environment.GetEnvironmentVariable("NR_DEV_HOMEROOT");
-                if (!string.IsNullOrWhiteSpace(homeRootPath) && Directory.Exists(homeRootPath))
-                {
-                    _sourceNewRelicHomeCoreClrDirectoryPath = $@"{homeRootPath}\newrelichome_x64_coreclr";
-                    return _sourceNewRelicHomeCoreClrDirectoryPath;
-                }
-
-                _sourceNewRelicHomeCoreClrDirectoryPath = Path.Combine(RepositoryRootPath, "src", "Agent", "newrelichome_x64_coreclr");
-                return _sourceNewRelicHomeCoreClrDirectoryPath;
-            }
-            set
-            {
-                _sourceNewRelicHomeCoreClrDirectoryPath = value;
-            }
-        }
+        private static string SourceNewRelicHomeCoreClrDirectoryPath => Path.Combine(RepositoryRootPath, "src", "Agent", "newrelichome_x64_standard");
 
         private static readonly string SourceApplicationLauncherProjectDirectoryPath = Path.Combine(SourceIntegrationTestsSolutionDirectoryPath, "ApplicationLauncher");
 
@@ -224,7 +176,8 @@ namespace NewRelic.Agent.IntegrationTestHelpers.RemoteServiceFixtures
 
         public ITestLogger TestLogger { get; set; }
 
-        protected bool IsCoreApp { get; }
+        private bool _isCoreApp;
+        protected bool IsCoreApp => true;
 
         public bool UseLocalConfig { get; set; }
 
@@ -249,7 +202,7 @@ namespace NewRelic.Agent.IntegrationTestHelpers.RemoteServiceFixtures
                     break;
             }
             SourceApplicationsDirectoryPath = Path.Combine(SourceIntegrationTestsSolutionDirectoryPath, applicationsFolder);
-            IsCoreApp = isCoreApp;
+            _isCoreApp = isCoreApp;
             if (int.TryParse(Environment.GetEnvironmentVariable("NR_DOTNET_TEST_SAVE_WORKING_DIRECTORY"), out var keepWorkingDirEnvVarValue))
             {
                 KeepWorkingDirectory = (keepWorkingDirEnvVarValue == 1);

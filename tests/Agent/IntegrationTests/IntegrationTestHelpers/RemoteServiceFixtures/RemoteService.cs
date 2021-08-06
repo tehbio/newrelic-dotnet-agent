@@ -81,7 +81,9 @@ namespace NewRelic.Agent.IntegrationTestHelpers.RemoteServiceFixtures
             }
             else
             {
-                CopyNewRelicHomeDirectoryToRemote();
+                if (IsCoreApp) CopyNewRelicHomeCoreClrDirectoryToRemote();
+                else CopyNewRelicHomeDirectoryToRemote();
+
                 if (!UseLocalConfig)
                 {
                     CommonUtils.ModifyOrCreateXmlAttributeInNewRelicConfig(DestinationNewRelicConfigFilePath, new[] { "configuration", "instrumentation", "applications", "application" }, "name", _executableName);
@@ -214,6 +216,11 @@ namespace NewRelic.Agent.IntegrationTestHelpers.RemoteServiceFixtures
                 startInfo.EnvironmentVariables.Add("CORECLR_PROFILER", "{36032161-FFC0-4B61-B559-F6C5D41BAE5A}");
                 startInfo.EnvironmentVariables.Add("CORECLR_PROFILER_PATH", profilerFilePath);
                 startInfo.EnvironmentVariables.Add("CORECLR_NEWRELIC_HOME", newRelicHomeDirectoryPath);
+
+                startInfo.EnvironmentVariables.Add("COR_ENABLE_PROFILING", "1");
+                startInfo.EnvironmentVariables.Add("COR_PROFILER", "{36032161-FFC0-4B61-B559-F6C5D41BAE5A}");
+                startInfo.EnvironmentVariables.Add("COR_PROFILER_PATH", profilerFilePath);
+                startInfo.EnvironmentVariables.Add("NEWRELIC_HOME", newRelicHomeDirectoryPath);
 
                 if (UseTieredCompilation)
                 {

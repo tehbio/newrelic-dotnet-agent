@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using System.Reflection;
 using System.Diagnostics;
 using NewRelic.Core.Logging;
+using System.Runtime.InteropServices;
 #if NET45
 using System.Web;
 using Microsoft.Win32;
@@ -34,6 +35,7 @@ namespace NewRelic.Agent.Core
 		public static DotnetFrameworkVersion DotnetFrameworkVersion { get; }
 #else
         public static DotnetCoreVersion DotnetCoreVersion { get; }
+        public static bool IsFramework { get; }
 #endif
         public static bool IsNetstandardPresent { get; }
         public static bool IsNet46OrAbove { get; }
@@ -56,6 +58,7 @@ namespace NewRelic.Agent.Core
 			IsWindows = true;
 #else
             IsWindows = System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows);
+            IsFramework = RuntimeInformation.FrameworkDescription.IndexOf("Framework", StringComparison.OrdinalIgnoreCase) >= 0;
 #endif
             NewRelicHome = GetNewRelicHome();
             NewRelicInstallPath = GetNewRelicInstallPath();
