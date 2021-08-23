@@ -80,6 +80,14 @@ namespace NewRelic.Agent.Core.Utilities
                 nonAutoReflectedAssemblies.Add(asmPath);
             }
 
+#if NETSTANDARD
+            if (!AgentInstallConfiguration.IsFramework)
+            {
+                nonAutoReflectedAssemblies.Add(Path.Combine(_installPathExtensionsDirectory, "NewRelic.Providers.Storage.OperationContext.dll"));
+                nonAutoReflectedAssemblies.Add(Path.Combine(_installPathExtensionsDirectory, "NewRelic.Providers.Wrapper.Wcf3.dll"));
+            }
+#endif
+
             var assemblyFiles = GetAssemblyFilesFromFolder(_installPathExtensionsDirectory);
 
             //remove assemblies that are not 

@@ -64,8 +64,8 @@ namespace NewRelic.Agent.Core
         private static string AuditLogName = "Audit";
 
         // Watch out!  If you change the time format that the agent puts into its log files, other log parsers may fail.
-        private static ILayout AuditLogLayout = new PatternLayout("%utcdate{yyyy-MM-dd HH:mm:ss,fff} NewRelic %level: %message\r\n");
-        private static ILayout FileLogLayout = new PatternLayout("%utcdate{yyyy-MM-dd HH:mm:ss,fff} NewRelic %6level: [pid: %property{pid}, tid: %property{threadid}] %message\r\n");
+        private static ILayout AuditLogLayout = new PatternLayout("%utcdate{yyyy-MM-dd HH:mm:ss,fff} NewRelic %level: %message%newline");
+        private static ILayout FileLogLayout = new PatternLayout("%utcdate{yyyy-MM-dd HH:mm:ss,fff} NewRelic %6level: [pid: property{pid}, tid: property{threadid}] %message%newline");
 
         private static ILayout eventLoggerLayout = new PatternLayout("%level: %message");
 

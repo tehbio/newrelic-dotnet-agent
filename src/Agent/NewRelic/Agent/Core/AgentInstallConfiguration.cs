@@ -34,6 +34,7 @@ namespace NewRelic.Agent.Core
 		public static DotnetFrameworkVersion DotnetFrameworkVersion { get; }
 #else
         public static DotnetCoreVersion DotnetCoreVersion { get; }
+        public static bool IsFramework { get; }
 #endif
         public static bool IsNetstandardPresent { get; }
         public static bool IsNet46OrAbove { get; }
@@ -56,6 +57,7 @@ namespace NewRelic.Agent.Core
 			IsWindows = true;
 #else
             IsWindows = System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows);
+            IsFramework = System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription.IndexOf("Framework 4", StringComparison.OrdinalIgnoreCase) >= 0;
 #endif
             NewRelicHome = GetNewRelicHome();
             NewRelicInstallPath = GetNewRelicInstallPath();

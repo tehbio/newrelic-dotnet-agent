@@ -26,7 +26,6 @@ namespace NewRelic { namespace Profiler {
               )
         {
             GetSingletonish() = this;
-            _productName = _X("New Relic .NET CoreCLR Agent");
         }
 
         ~CoreCLRCorProfilerCallbackImpl()

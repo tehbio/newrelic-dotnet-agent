@@ -20,7 +20,6 @@ namespace NewRelic { namespace Profiler
             : ICorProfilerCallbackBase(std::make_shared<SystemCalls>(_X("NEWRELIC_HOME"), _X("NEWRELIC_INSTALL_PATH")))
         {
             GetSingletonish() = this;
-            _productName = _X("New Relic .NET Agent");
         }
 
         ~FrameworkCorProfilerCallbackImpl()

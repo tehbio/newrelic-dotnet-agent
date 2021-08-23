@@ -75,6 +75,7 @@ namespace Profiler {
             : _referenceCount(0)
         {
             _systemCalls = systemCalls;
+            _productName = _X("New Relic .NET Standard Agent");
         }
 
         virtual ~ICorProfilerCallbackBase()
